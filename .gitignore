@@ -1,0 +1,14 @@
+// binary
+TravelSphere
+
+// configuration
+app.conf
+
+// IDE
+.vscode/
+
+// logs
+*.log
+
+// build
+coverage.out
