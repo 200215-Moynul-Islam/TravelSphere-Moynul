@@ -7,4 +7,7 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.HomeController{})
+
+	// Register global error controller
+    beego.ErrorController(&controllers.ErrorController{})
 }
