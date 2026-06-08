@@ -10,17 +10,14 @@ type CountryController struct {
 }
 
 func (c *CountryController) SearchCountriesByPartialName() {
-    query := c.GetString("search")
+	query := c.GetString("search")
 
-    service := &services.CountryService{}
-    countries, err := service.GetCountriesByPartialName(query)
-    if err != nil {
-        c.Data["json"] = map[string]string{"error": "Failed to fetch search results"}
-        c.Ctx.Output.SetStatus(http.StatusInternalServerError)
-        c.ServeJSON()
-        return
-    }
+	service := &services.CountryService{}
+	countries, err := service.GetCountriesByPartialName(query)
+	if err != nil {
+		c.SendError("Failed to fetch search results", http.StatusInternalServerError)
+		return
+	}
 
-    c.Data["json"] = countries
-    c.ServeJSON()
+	c.SendSuccess("Countries fetched successfully", countries, http.StatusOK)
 }

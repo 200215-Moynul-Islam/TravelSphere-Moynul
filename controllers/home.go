@@ -15,6 +15,7 @@ func (c *HomeController) Get() {
 	c.Data["Title"] = "Home - TravelSphere"
 	c.Data["CurrentNav"] = constants.NavHome
 	c.Data["PageStylesheets"] = `<link rel="stylesheet" href="/static/css/home.css">`
+	c.Data["PageScripts"] = `<script src="/static/js/home.js"></script>`
 
 	service := &services.CountryService{}
 

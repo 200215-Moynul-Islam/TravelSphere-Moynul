@@ -1,3 +1,94 @@
+/* #region Discover Next Destinations Styles */
+.hero-section {
+  background: linear-gradient(115deg, #2f2352 0%, #2b235e 45%, #5653ff 100%);
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  padding: 2rem;
+  color: #ffffff;
+}
+
+.hero-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.search-box-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-input-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+#hero-country-search {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  color: #0f172a;
+  outline: none;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 8px 0;
+  max-height: 320px;
+  overflow-y: auto;
+  list-style: none;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+.autocomplete-dropdown li {
+  padding: 14px 24px;
+  font-size: 15px;
+  color: #334155;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.autocomplete-dropdown li:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.autocomplete-dropdown .no-match {
+  color: #94a3b8;
+  cursor: default;
+}
+
+.autocomplete-dropdown .no-match:hover {
+  background-color: transparent;
+}
+
+.hidden {
+  display: none !important;
+}
+/* #endregion */
+
+/* #region Featured Destinations Styles */
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
@@ -75,3 +166,4 @@
   font-size: 0.9rem;
   color: #a8a8a8;
 }
+/* #endregion */

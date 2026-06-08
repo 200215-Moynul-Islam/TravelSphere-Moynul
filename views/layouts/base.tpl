@@ -17,7 +17,9 @@
     <link rel="stylesheet" href="/static/css/footer.css">
     
     <!-- Link page specific stylesheet -->
-    {{.PageStylesheets | str2html}}
+    {{if .PageStylesheets}}
+        {{str2html .PageStylesheets}}
+    {{end}}
 </head>
 <body>
     {{template "partials/header.tpl" .}}
@@ -27,5 +29,9 @@
     </main>
 
     {{template "partials/footer.tpl" .}}
+
+    {{if .PageScripts}}
+        {{str2html .PageScripts}}
+    {{end}}
 </body>
 </html>
