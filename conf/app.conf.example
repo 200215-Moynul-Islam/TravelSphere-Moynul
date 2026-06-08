@@ -1,3 +1,6 @@
 appname = TravelSphere
 httpport = 8080
 runmode = dev
+
+# External APIs
+restcountries_base_url = "https://restcountries.com/v3.1"
