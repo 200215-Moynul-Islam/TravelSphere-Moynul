@@ -14,10 +14,15 @@
     <link rel="stylesheet" href="/static/css/reset.css">
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/footer.css">
 </head>
 <body>
     {{template "partials/header.tpl" .}}
 
-    {{.LayoutContent}}
+    <main class="layout-content">
+        {{.LayoutContent}}
+    </main>
+
+    {{template "partials/footer.tpl" .}}
 </body>
 </html>
