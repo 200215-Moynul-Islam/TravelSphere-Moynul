@@ -9,7 +9,7 @@ import (
 	beego "github.com/beego/beego/v2/server/web"
 )
 
-func GetCountriesByCodes(codes []string) ([]map[string]any, error) {
+func GetCountriesByCodes(codes []string) ([]CountryDTO, error) {
 	baseURL, err := beego.AppConfig.String("restcountries_base_url")
 	if err != nil || baseURL == "" {
 		baseURL = "https://restcountries.com/v3.1" // Fallback url
@@ -25,10 +25,10 @@ func GetCountriesByCodes(codes []string) ([]map[string]any, error) {
 		return nil, fmt.Errorf("api error status: %d", apiResponse.StatusCode)
 	}
 
-	var rawData []map[string]any
-	if err := json.NewDecoder(apiResponse.Body).Decode(&rawData); err != nil {
-		return nil, fmt.Errorf("failed to parse json: %w", err)
+	var countries []CountryDTO
+	if err := json.NewDecoder(apiResponse.Body).Decode(&countries); err != nil {
+		return nil, fmt.Errorf("failed to decode json stream: %w", err)
 	}
 
-	return rawData, nil
+	return countries, nil
 }

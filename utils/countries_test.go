@@ -26,9 +26,9 @@ func TestGetCountriesByCodes(t *testing.T) {
 			inputCodes: []string{"usa", "fra", "jpn"},
 			mockStatusCode: http.StatusOK,
 			mockResponseBody: `[
-                {"name": {"common": "United States"}, "cca3": "USA", "capital": ["Washington, D.C."]},
-                {"name": {"common": "France"}, "cca3": "FRA", "capital": ["Paris"]}
-            ]`,
+				{"name": {"common": "United States"}, "cca3": "USA", "capital": ["Washington, D.C."]},
+				{"name": {"common": "France"}, "cca3": "FRA", "capital": ["Paris"]}
+			]`,
 			expectError: false,
 			overrideURL: "",
 			clearConfig: false,
@@ -110,7 +110,7 @@ func TestGetCountriesByCodes(t *testing.T) {
 				t.Fatalf("Expected no execution error, but got: %v", err)
 			}
 
-			var expectedData []map[string]any
+			var expectedData []CountryDTO
 			if unmarshalErr := json.Unmarshal([]byte(tc.mockResponseBody), &expectedData); unmarshalErr != nil {
 				t.Fatalf("Test setup failure while parsing mock JSON text string: %v", unmarshalErr)
 			}
