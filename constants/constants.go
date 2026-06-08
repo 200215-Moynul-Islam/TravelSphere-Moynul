@@ -19,3 +19,5 @@ var NavigationItems = []NavItem{
 	{Name: "Wishlist", URL: "/wishlist", Key: NavWishlist},
 	{Name: "Dashboard", URL: "/dashboard", Key: NavDashboard},
 }
+
+var FeaturedCountryCodes = []string{"USA", "FRA", "JPN", "AUS", "BRA", "BGD"}

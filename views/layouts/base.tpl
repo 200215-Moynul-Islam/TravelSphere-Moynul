@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/header.css">
     <link rel="stylesheet" href="/static/css/footer.css">
+    
+    <!-- Link page specific stylesheet -->
+    {{.PageStylesheets | str2html}}
 </head>
 <body>
     {{template "partials/header.tpl" .}}
