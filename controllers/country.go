@@ -1,0 +1,57 @@
+package controllers
+
+import (
+	"TravelSphere/constants"
+	"TravelSphere/models"
+	"TravelSphere/services"
+	"fmt"
+
+	logs "github.com/beego/beego/v2/core/logs"
+)
+
+type CountryController struct {
+	SSRBaseController
+}
+
+func (c *CountryController) GetDetails() {
+	countryCode := c.Ctx.Input.Param(":code")
+	if countryCode == "" {
+		c.Redirect("/", 302)
+		return
+	}
+
+	countryService := &services.CountryService{}
+	attractionService := &services.AttractionService{}
+
+	// Retrieve country details using the provided country code
+	// Reuse the service method that fetches countries by their codes, passing a single code in the slice
+	countries, err := countryService.GetCountriesByCodes([]string{countryCode})
+	if err != nil || len(countries) == 0 {
+		logs.Error("Failed to look up country details for code %s: %v", countryCode, err)
+		c.Redirect("/", 302)
+		return
+	}
+	country := countries[0]
+
+	var attractions []models.Attraction
+	if country.Capital != "" {
+		fetchedAttractions, attrErr := attractionService.GetPopularAttractions(country.Capital)
+		if attrErr != nil {
+			logs.Error("Failed loading attraction cards for city %s: %v", country.Capital, attrErr)
+			attractions = []models.Attraction{}
+		} else {
+			attractions = fetchedAttractions
+		}
+	}
+
+	c.Data["Title"] = fmt.Sprintf("%s - TravelSphere", country.Name)
+	c.Data["CurrentNav"] = constants.NavCountries
+	c.Data["PageStylesheets"] = `<link rel="stylesheet" href="/static/css/country_details.css">`
+	c.Data["PageScripts"] = `<script src="/static/js/country_details.js"></script>`
+
+	c.Data["CountryDetails"] = country
+	c.Data["Attractions"] = attractions
+
+	c.Layout = "layouts/base.tpl"
+	c.TplName = "pages/country_details.tpl"
+}

@@ -1,12 +1,14 @@
 package routers
 
 import (
-	beego "github.com/beego/beego/v2/server/web"
 	"TravelSphere/controllers"
+
+	beego "github.com/beego/beego/v2/server/web"
 )
 
 func init() {
 	beego.Router("/", &controllers.HomeController{})
+	beego.Router("/country/:code", &controllers.CountryController{}, "get:GetDetails")
 
 	// Register global error controller
     beego.ErrorController(&controllers.ErrorController{})
