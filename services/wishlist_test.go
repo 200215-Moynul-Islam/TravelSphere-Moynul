@@ -169,3 +169,55 @@ func TestDeleteWishlist(t *testing.T) {
 		})
 	}
 }
+
+func TestGetWishlist(t *testing.T) {
+	tests := []struct {
+		name string
+		username string
+		initialStore map[string][]models.WishlistEntry
+		expectedLen int
+	}{
+		{
+			name: "Retrieve multiple entries for user",
+			username: "moynul_islam",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{ID: "id-1", CountryName: "Japan", CreatedAt: time.Now()},
+					{ID: "id-2", CountryName: "France", CreatedAt: time.Now()},
+				},
+			},
+			expectedLen: 2,
+		},
+		{
+			name: "Retrieve empty slice for non-existent user",
+			username: "new_user",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{ID: "id-1", CountryName: "Japan", CreatedAt: time.Now()},
+				},
+			},
+			expectedLen: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data.StoreMutex.Lock()
+			data.WishlistStore = tt.initialStore
+			data.StoreMutex.Unlock()
+
+			service := &WishlistService{}
+			entries, err := service.GetWishlist(tt.username)
+
+			if err != nil {
+				t.Fatalf("Expected no error, but got: %v", err)
+			}
+			if len(entries) != tt.expectedLen {
+				t.Errorf("Expected entries length to be %d, got %d", tt.expectedLen, len(entries))
+			}
+			if len(entries) == 0 && entries == nil {
+				t.Error("Expected an allocated empty slice, but got nil")
+			}
+		})
+	}
+}

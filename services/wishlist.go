@@ -42,3 +42,13 @@ func (s *WishlistService) DeleteWishlist(username, id string) error {
 	}
 	return errors.New("wishlist entry not found")
 }
+
+func (s *WishlistService) GetWishlist(username string) ([]models.WishlistEntry, error) {
+	data.StoreMutex.RLock()
+	defer data.StoreMutex.RUnlock()
+	entries, exists := data.WishlistStore[username]
+	if !exists {
+		return []models.WishlistEntry{}, nil
+	}
+	return entries, nil
+}

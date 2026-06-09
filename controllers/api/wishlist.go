@@ -61,3 +61,14 @@ func (c *WishlistController) DeleteWishlist() {
 	}
 	c.SendSuccess("Wishlist entry deleted successfully", nil, http.StatusOK)
 }
+
+func (c *WishlistController) GetWishlist() {
+	username := c.Ctx.Input.Header("Username")
+	service := &services.WishlistService{}
+	entries, err := service.GetWishlist(username)
+	if err != nil {
+		c.SendError(err.Error(), http.StatusInternalServerError)
+		return
+	}
+	c.SendSuccess("Wishlist retrieved successfully", entries, http.StatusOK)
+}
