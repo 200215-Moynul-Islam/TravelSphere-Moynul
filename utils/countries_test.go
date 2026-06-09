@@ -1,7 +1,10 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -231,4 +234,125 @@ func TestGetAllCountries(t *testing.T) {
             }
         })
     }
+}
+
+func TestGetCountriesByRegion(t *testing.T) {
+	testCases := []struct {
+		name string
+		inputRegion string
+		mockStatusCode int
+		mockResponseBody string
+		expectError bool
+		overrideURL string
+		clearConfig bool
+	}{
+		{
+			name: "Success - Valid country array returned for region",
+			inputRegion: "europe",
+			mockStatusCode: http.StatusOK,
+			mockResponseBody: `[
+				{"name": {"common": "Germany"}, "cca3": "DEU", "capital": ["Berlin"], "region": "Europe"},
+				{"name": {"common": "France"}, "cca3": "FRA", "capital": ["Paris"], "region": "Europe"}
+			]`,
+			expectError: false,
+			overrideURL: "",
+			clearConfig: false,
+		},
+		{
+			name: "API Error - Remote server returns 500 status",
+			inputRegion: "asia",
+			mockStatusCode: http.StatusInternalServerError,
+			mockResponseBody: `{"message": "Internal Server Error"}`,
+			expectError: true,
+			overrideURL: "",
+			clearConfig: false,
+		},
+		{
+			name: "JSON Parse Error - Server returns invalid JSON syntax",
+			inputRegion: "africa",
+			mockStatusCode: http.StatusOK,
+			mockResponseBody: `[{invalid-json}`,
+			expectError: true,
+			overrideURL: "",
+			clearConfig: false,
+		},
+		{
+			name: "Connection Error - Server URL protocol is completely invalid",
+			inputRegion: "americas",
+			mockStatusCode: http.StatusOK,
+			mockResponseBody: ``,
+			expectError: true,
+			overrideURL: "http://invalid-url-domain-space-error.local",
+			clearConfig: false,
+		},
+		{
+			name: "Config Error Fallback - Triggers config missing branch and breaks on live fallback connection",
+			inputRegion: "oceania",
+			mockStatusCode: http.StatusOK,
+			mockResponseBody: ``,
+			expectError: true,
+			overrideURL: "",
+			clearConfig: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				expectedPathSegment := "/region/" + tc.inputRegion
+				if !strings.Contains(r.URL.Path, expectedPathSegment) {
+					t.Errorf("Expected URL path to contain %s, but got: %s", expectedPathSegment, r.URL.Path)
+				}
+				if r.URL.Query().Get("fields") == "" {
+					t.Errorf("Expected URL query parameters to contain filtered fields selection target criteria")
+				}
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tc.mockStatusCode)
+				_, _ = w.Write([]byte(tc.mockResponseBody))
+			}))
+			defer mockServer.Close()
+
+			targetURL := mockServer.URL
+			if tc.overrideURL != "" {
+				targetURL = tc.overrideURL
+			}
+			_ = beego.AppConfig.Set("restcountries_base_url", targetURL)
+
+			if tc.clearConfig {
+				_ = beego.AppConfig.Set("restcountries_base_url", "")
+				originalTransport := http.DefaultTransport
+				defer func() { http.DefaultTransport = originalTransport }()
+				http.DefaultTransport = &http.Transport{
+					DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+						return nil, fmt.Errorf("forced network failure for fallback testing")
+					},
+				}
+			}
+
+			resultData, err := GetCountriesByRegion(tc.inputRegion)
+
+			if tc.expectError {
+				if err == nil {
+					t.Errorf("Expected an execution error, but received nil")
+				}
+				if resultData != nil {
+					t.Errorf("Expected output payload slice to be nil on error states, got: %v", resultData)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("Expected no execution error, but got: %v", err)
+			}
+
+			var expectedData []CountryDTO
+			if unmarshalErr := json.Unmarshal([]byte(tc.mockResponseBody), &expectedData); unmarshalErr != nil {
+				t.Fatalf("Test setup failure while parsing mock JSON text string: %v", unmarshalErr)
+			}
+
+			if !reflect.DeepEqual(resultData, expectedData) {
+				t.Errorf("Returned data does not match the mock API data exactly.\nReturned: %+v\nExpected: %+v", resultData, expectedData)
+			}
+		})
+	}
 }
