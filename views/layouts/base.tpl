@@ -6,10 +6,32 @@
 
     <title>{{.Title}}</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="/static/css/reset.css">
     <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <link rel="stylesheet" href="/static/css/footer.css">
+    
+    <!-- Link page specific stylesheet -->
+    {{if .PageStylesheets}}
+        {{str2html .PageStylesheets}}
+    {{end}}
 </head>
 <body>
-    {{.LayoutContent}}
+    {{template "partials/header.tpl" .}}
+
+    <main class="layout-content">
+        {{.LayoutContent}}
+    </main>
+
+    {{template "partials/footer.tpl" .}}
+
+    {{if .PageScripts}}
+        {{str2html .PageScripts}}
+    {{end}}
 </body>
 </html>

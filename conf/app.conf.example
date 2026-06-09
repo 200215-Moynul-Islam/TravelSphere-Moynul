@@ -1,3 +1,11 @@
 appname = TravelSphere
 httpport = 8080
 runmode = dev
+
+# External APIs
+restcountries_base_url = "https://restcountries.com/v3.1"
+opentripmap_geoname_url = "https://api.opentripmap.com/0.1/en/places/geoname"
+opentripmap_radius_url = "https://api.opentripmap.com/0.1/en/places/radius"
+
+# API Keys
+opentripmap_api_key = set_your_opentripmap_api_key_here
