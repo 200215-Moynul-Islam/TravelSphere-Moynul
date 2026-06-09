@@ -13,6 +13,26 @@ type CountryController struct {
 	SSRBaseController
 }
 
+func (c *CountryController) GetAll() {
+	c.Data["Title"] = "Explore Countries - TravelSphere"
+	c.Data["CurrentNav"] = constants.NavCountries
+	c.Data["PageStylesheets"] = `<link rel="stylesheet" href="/static/css/countries.css">`
+	c.Data["PageScripts"] = `<script src="/static/js/countries.js"></script>`
+
+	service := &services.CountryService{}
+
+	allCountries, err := service.GetAllCountries()
+	if err != nil {
+		logs.Error("Failed to fetch country grid datasets: %v", err)
+		c.Data["Countries"] = []any{}
+	} else {
+		c.Data["Countries"] = allCountries
+	}
+
+	c.Layout = "layouts/base.tpl"
+	c.TplName = "pages/countries.tpl"
+}
+
 func (c *CountryController) GetDetails() {
 	countryCode := c.Ctx.Input.Param(":code")
 	if countryCode == "" {
