@@ -27,25 +27,6 @@ func (s *CountryService) GetCountriesByCodes(codes []string) ([]models.Country, 
 	return countries, nil
 }
 
-func (s *CountryService) GetCountriesByPartialName(partialName string) ([]models.Country, error) {
-    normalizedName := strings.TrimSpace(partialName)
-    if normalizedName == "" {
-        return []models.Country{}, nil
-    }
-
-    dtos, err := utils.GetCountriesByPartialName(normalizedName)
-    if err != nil {
-        return nil, fmt.Errorf("failed to fetch countries: %w", err)
-    }
-
-    countries, err := utils.MapToCountrySlice(dtos)
-    if err != nil {
-        return nil, fmt.Errorf("failed to translate country data: %w", err)
-    }
-
-    return countries, nil
-}
-
 func (s *CountryService) GetAllCountries() ([]models.Country, error) {
     dtos, err := utils.GetAllCountries()
     if err != nil {

@@ -34,31 +34,6 @@ func GetCountriesByCodes(codes []string) ([]CountryDTO, error) {
 	return countries, nil
 }
 
-func GetCountriesByPartialName(partialName string) ([]CountryDTO, error) {
-    baseURL, err := beego.AppConfig.String("restcountries_base_url")
-    if err != nil || baseURL == "" {
-        baseURL = "https://restcountries.com/v3.1"
-    }
-    
-    url := fmt.Sprintf("%s/name/%s?fullText=false", baseURL, partialName)
-    apiResponse, err := http.Get(url)
-    if err != nil {
-        return nil, fmt.Errorf("failed connection: %w", err)
-    }
-    defer apiResponse.Body.Close()
-
-    if apiResponse.StatusCode != http.StatusOK {
-        return nil, fmt.Errorf("api error status: %d", apiResponse.StatusCode)
-    }
-
-    var countries []CountryDTO
-    if err := json.NewDecoder(apiResponse.Body).Decode(&countries); err != nil {
-        return nil, fmt.Errorf("failed to decode json stream: %w", err)
-    }
-
-    return countries, nil
-}
-
 func GetAllCountries() ([]CountryDTO, error) {
 	baseURL, err := beego.AppConfig.String("restcountries_base_url")
 	if err != nil || baseURL == "" {

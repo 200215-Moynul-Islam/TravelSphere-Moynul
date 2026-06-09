@@ -9,15 +9,16 @@ type CountryController struct {
     APIBaseController
 }
 
-func (c *CountryController) SearchCountriesByPartialName() {
-	query := c.GetString("search")
+func (c *CountryController) GetFilteredCountries() {
+    searchQuery := c.GetString("search")
+    regionQuery := c.GetString("region")
 
-	service := &services.CountryService{}
-	countries, err := service.GetCountriesByPartialName(query)
-	if err != nil {
-		c.SendError("Failed to fetch search results", http.StatusInternalServerError)
-		return
-	}
+    service := &services.CountryService{}
+    countries, err := service.GetFilteredCountries(searchQuery, regionQuery)
+    if err != nil {
+        c.SendError("Failed to fetch filtered country destinations", http.StatusInternalServerError)
+        return
+    }
 
-	c.SendSuccess("Countries fetched successfully", countries, http.StatusOK)
+    c.SendSuccess("Filtered country data list retrieved successfully", countries, http.StatusOK)
 }

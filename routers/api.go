@@ -9,7 +9,7 @@ import (
 func init() {
 	ns := beego.NewNamespace("/api",
 		beego.NSNamespace("/countries",
-			beego.NSRouter("/", &api.CountryController{}, "get:SearchCountriesByPartialName"),
+			beego.NSRouter("", &api.CountryController{}, "get:GetFilteredCountries"),
 		),
 	)
 
