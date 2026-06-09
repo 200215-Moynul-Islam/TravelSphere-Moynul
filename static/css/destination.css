@@ -1,0 +1,140 @@
+.country-header-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.flag-wrapper {
+  width: 15rem;
+  height: 10rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.flag-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-details {
+  flex: 1;
+}
+
+.region-badge {
+  background-color: #f1f5f9;
+  color: #4f46e5;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+
+.country-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0.75rem 0 1.25rem 0;
+}
+
+.meta-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.meta-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
+
+.meta-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.action-strip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.wishlist-add-btn {
+  background-color: #f43f5e;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.wishlist-add-btn:hover {
+  background-color: #e11d48;
+}
+
+.panel-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.panel-heading {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 1.25rem 0;
+}
+
+.attraction-rows-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-attraction-row {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.landmark-title {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.landmark-kinds {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  text-transform: lowercase;
+}
+
+.empty-state-fallback {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
