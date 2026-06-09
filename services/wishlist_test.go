@@ -221,3 +221,74 @@ func TestGetWishlist(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateWishlist(t *testing.T) {
+	tests := []struct {
+		name string
+		username string
+		targetID string
+		inputNote string
+		inputStatus string
+		initialStore map[string][]models.WishlistEntry
+		expectedErr bool
+	}{
+		{
+			name: "Successful update modification",
+			username: "moynul_islam",
+			targetID: "id-123",
+			inputNote: "Updated note text",
+			inputStatus: "Visited",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{ID: "id-123", CountryName: "Japan", Note: "Old note", Status: "Planned", CreatedAt: time.Now()},
+				},
+			},
+			expectedErr: false,
+		},
+		{
+			name: "Target item execution failure missing ID",
+			username: "moynul_islam",
+			targetID: "id-missing",
+			inputNote: "Target note",
+			inputStatus: "Visited",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{ID: "id-123", CountryName: "Japan", Note: "Old note", Status: "Planned", CreatedAt: time.Now()},
+				},
+			},
+			expectedErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data.StoreMutex.Lock()
+			data.WishlistStore = tt.initialStore
+			data.StoreMutex.Unlock()
+
+			service := &WishlistService{}
+			entry, err := service.UpdateWishlist(tt.username, tt.targetID, tt.inputNote, tt.inputStatus)
+
+			if (err != nil) != tt.expectedErr {
+				t.Fatalf("Expected error presence: %v, got: %v", tt.expectedErr, err)
+			}
+
+			if !tt.expectedErr {
+				if entry.Note != tt.inputNote {
+					t.Errorf("Expected note to be updated to %q, got %q", tt.inputNote, entry.Note)
+				}
+				if entry.Status != tt.inputStatus {
+					t.Errorf("Expected status to be updated to %q, got %q", tt.inputStatus, entry.Status)
+				}
+
+				data.StoreMutex.RLock()
+				storedEntries := data.WishlistStore[tt.username]
+				data.StoreMutex.RUnlock()
+
+				if storedEntries[0].Note != tt.inputNote || storedEntries[0].Status != tt.inputStatus {
+					t.Error("Stored entry inside data layer slice map was not structurally mutated")
+				}
+			}
+		})
+	}
+}

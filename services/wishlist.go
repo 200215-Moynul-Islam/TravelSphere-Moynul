@@ -52,3 +52,20 @@ func (s *WishlistService) GetWishlist(username string) ([]models.WishlistEntry, 
 	}
 	return entries, nil
 }
+
+func (s *WishlistService) UpdateWishlist(username, id, note, status string) (models.WishlistEntry, error) {
+	data.StoreMutex.Lock()
+	defer data.StoreMutex.Unlock()
+	userEntries, exists := data.WishlistStore[username]
+	if !exists {
+		return models.WishlistEntry{}, errors.New("wishlist entry not found")
+	}
+	for i, entry := range userEntries {
+		if entry.ID == id {
+			userEntries[i].Note = note
+			userEntries[i].Status = status
+			return userEntries[i], nil
+		}
+	}
+	return models.WishlistEntry{}, errors.New("wishlist entry not found")
+}

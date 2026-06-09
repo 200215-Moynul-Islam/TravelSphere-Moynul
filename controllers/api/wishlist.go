@@ -19,6 +19,11 @@ type WishlistRequest struct {
 	Status string `json:"status" valid:"Required"`
 }
 
+type UpdateWishlistRequest struct {
+	Note string `json:"note"`
+	Status string `json:"status" valid:"Required"`
+}
+
 func (c *WishlistController) CreateWishlist() {
 	username := c.Ctx.Input.Header("Username")
 	var req WishlistRequest
@@ -71,4 +76,25 @@ func (c *WishlistController) GetWishlist() {
 		return
 	}
 	c.SendSuccess("Wishlist retrieved successfully", entries, http.StatusOK)
+}
+
+func (c *WishlistController) UpdateWishlist() {
+	username := c.Ctx.Input.Header("Username")
+	id := c.Ctx.Input.Param(":id")
+	var req UpdateWishlistRequest
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &req); err != nil {
+		c.SendError("Invalid payload structure", http.StatusBadRequest)
+		return
+	}
+	if !utils.IsValidStatus(req.Status) {
+		c.SendError("status: must be either Planned or Visited", http.StatusBadRequest)
+		return
+	}
+	service := &services.WishlistService{}
+	entry, err := service.UpdateWishlist(username, id, req.Note, req.Status)
+	if err != nil {
+		c.SendError(err.Error(), http.StatusNotFound)
+		return
+	}
+	c.SendSuccess("Wishlist entry updated successfully", entry, http.StatusOK)
 }
