@@ -1,6 +1,7 @@
 package services
 
 import (
+	"TravelSphere/constants"
 	"TravelSphere/data"
 	"TravelSphere/models"
 	"errors"
@@ -68,4 +69,27 @@ func (s *WishlistService) UpdateWishlist(username, id, note, status string) (mod
 		}
 	}
 	return models.WishlistEntry{}, errors.New("wishlist entry not found")
+}
+
+func (s *WishlistService) GetDashboardSummary(username string) (map[string]int, error) {
+	data.StoreMutex.RLock()
+	defer data.StoreMutex.RUnlock()
+	summary := map[string]int{
+		"wishlist_count": 0,
+		"planned_count": 0,
+		"visited_count": 0,
+	}
+	userEntries, exists := data.WishlistStore[username]
+	if !exists {
+		return summary, nil
+	}
+	summary["wishlist_count"] = len(userEntries)
+	for _, entry := range userEntries {
+		if entry.Status == constants.StatusPlanned {
+			summary["planned_count"]++
+		} else if entry.Status == constants.StatusVisited {
+			summary["visited_count"]++
+		}
+	}
+	return summary, nil
 }

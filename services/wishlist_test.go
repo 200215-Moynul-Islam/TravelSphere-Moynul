@@ -292,3 +292,61 @@ func TestUpdateWishlist(t *testing.T) {
 		})
 	}
 }
+
+func TestGetDashboardSummary(t *testing.T) {
+	tests := []struct {
+		name string
+		username string
+		initialStore map[string][]models.WishlistEntry
+		expectedTotal int
+		expectedPlanned int
+		expectedVisited int
+	}{
+		{
+			name: "Calculate mixed counts accurately",
+			username: "moynul_islam",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{Status: "Planned"},
+					{Status: "Visited"},
+					{Status: "Planned"},
+				},
+			},
+			expectedTotal: 3,
+			expectedPlanned: 2,
+			expectedVisited: 1,
+		},
+		{
+			name: "Handle completely empty dashboard values gracefully",
+			username: "new_user",
+			initialStore: map[string][]models.WishlistEntry{},
+			expectedTotal: 0,
+			expectedPlanned: 0,
+			expectedVisited: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data.StoreMutex.Lock()
+			data.WishlistStore = tt.initialStore
+			data.StoreMutex.Unlock()
+
+			service := &WishlistService{}
+			summary, err := service.GetDashboardSummary(tt.username)
+
+			if err != nil {
+				t.Fatalf("Expected no error, but got: %v", err)
+			}
+			if summary["wishlist_count"] != tt.expectedTotal {
+				t.Errorf("Expected total count %d, got %d", tt.expectedTotal, summary["wishlist_count"])
+			}
+			if summary["planned_count"] != tt.expectedPlanned {
+				t.Errorf("Expected planned count %d, got %d", tt.expectedPlanned, summary["planned_count"])
+			}
+			if summary["visited_count"] != tt.expectedVisited {
+				t.Errorf("Expected visited count %d, got %d", tt.expectedVisited, summary["visited_count"])
+			}
+		})
+	}
+}

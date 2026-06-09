@@ -17,6 +17,10 @@ func init() {
 			beego.NSRouter("", &api.WishlistController{}, "get:GetWishlist;post:CreateWishlist"),
 			beego.NSRouter("/:id", &api.WishlistController{}, "put:UpdateWishlist;delete:DeleteWishlist"),
 		),
+		beego.NSNamespace("/dashboard",
+			beego.NSBefore(middlewares.Authenticate),
+			beego.NSRouter("/summary", &api.WishlistController{}, "get:GetSummary"),
+		),
 	)
 
 	beego.AddNamespace(ns)

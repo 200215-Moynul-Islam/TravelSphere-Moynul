@@ -98,3 +98,10 @@ func (c *WishlistController) UpdateWishlist() {
 	}
 	c.SendSuccess("Wishlist entry updated successfully", entry, http.StatusOK)
 }
+
+func (c *WishlistController) GetSummary() {
+	username := c.Ctx.Input.Header("Username")
+	service := &services.WishlistService{}
+	summary, _ := service.GetDashboardSummary(username)
+	c.SendSuccess("Dashboard summary retrieved successfully", summary, http.StatusOK)
+}
