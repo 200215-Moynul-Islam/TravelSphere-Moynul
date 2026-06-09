@@ -45,3 +45,17 @@ func (s *CountryService) GetCountriesByPartialName(partialName string) ([]models
 
     return countries, nil
 }
+
+func (s *CountryService) GetAllCountries() ([]models.Country, error) {
+    dtos, err := utils.GetAllCountries()
+    if err != nil {
+        return nil, fmt.Errorf("failed to fetch all countries: %w", err)
+    }
+
+    countries, err := utils.MapToCountrySlice(dtos)
+    if err != nil {
+        return nil, fmt.Errorf("failed to translate all country data: %w", err)
+    }
+
+    return countries, nil
+}
