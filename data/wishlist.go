@@ -6,6 +6,6 @@ import (
 )
 
 var (
-	WishlistStore = make(map[string]models.WishlistEntry)
+	WishlistStore = make(map[string][]models.WishlistEntry)
 	StoreMutex sync.RWMutex
 )

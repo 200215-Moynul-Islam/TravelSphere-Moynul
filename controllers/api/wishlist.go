@@ -20,6 +20,7 @@ type WishlistRequest struct {
 }
 
 func (c *WishlistController) CreateWishlist() {
+	username := c.Ctx.Input.Header("Username")
 	var req WishlistRequest
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &req); err != nil {
 		c.SendError("Invalid payload structure", http.StatusBadRequest)
@@ -42,7 +43,7 @@ func (c *WishlistController) CreateWishlist() {
 		}
 	}
 	service := &services.WishlistService{}
-	entry, err := service.AddToWishlist(req.CountryName, req.Note, req.Status)
+	entry, err := service.AddToWishlist(username, req.CountryName, req.Note, req.Status)
 	if err != nil {
 		c.SendError(err.Error(), http.StatusBadRequest)
 		return

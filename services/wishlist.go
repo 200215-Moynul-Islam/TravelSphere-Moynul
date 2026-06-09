@@ -10,9 +10,10 @@ import (
 
 type WishlistService struct{}
 
-func (s *WishlistService) AddToWishlist(countryName, note, status string) (models.WishlistEntry, error) {
+func (s *WishlistService) AddToWishlist(username, countryName, note, status string) (models.WishlistEntry, error) {
 	data.StoreMutex.Lock()
 	defer data.StoreMutex.Unlock()
+
 	entry := models.WishlistEntry{
 		ID: uuid.New().String(),
 		CountryName: countryName,
@@ -20,6 +21,7 @@ func (s *WishlistService) AddToWishlist(countryName, note, status string) (model
 		Status: status,
 		CreatedAt: time.Now(),
 	}
-	data.WishlistStore[entry.ID] = entry
+
+	data.WishlistStore[username] = append(data.WishlistStore[username], entry)
 	return entry, nil
 }

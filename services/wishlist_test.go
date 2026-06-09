@@ -6,27 +6,31 @@ import (
 	"testing"
 )
 
-func TestAddToWishlist_TableDriven(t *testing.T) {
+func TestAddToWishlist(t *testing.T) {
 	tests := []struct {
 		name string
+		username string
 		countryName string
 		note string
 		status string
 	}{
 		{
 			name: "Valid Planned Destination",
+			username: "moynul_islam",
 			countryName: "Japan",
 			note: "Cherry blossom season",
 			status: "Planned",
 		},
 		{
 			name: "Valid Visited Destination",
+			username: "moynul_islam",
 			countryName: "France",
 			note: "Eiffel tower trip",
 			status: "Visited",
 		},
 		{
 			name: "Empty Note Field",
+			username: "john_doe",
 			countryName: "Canada",
 			note: "",
 			status: "Planned",
@@ -36,11 +40,11 @@ func TestAddToWishlist_TableDriven(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			data.StoreMutex.Lock()
-			data.WishlistStore = make(map[string]models.WishlistEntry)
+			data.WishlistStore = make(map[string][]models.WishlistEntry)
 			data.StoreMutex.Unlock()
 
 			service := &WishlistService{}
-			entry, err := service.AddToWishlist(tt.countryName, tt.note, tt.status)
+			entry, err := service.AddToWishlist(tt.username, tt.countryName, tt.note, tt.status)
 
 			if err != nil {
 				t.Fatalf("Expected no error, but got: %v", err)
@@ -62,14 +66,32 @@ func TestAddToWishlist_TableDriven(t *testing.T) {
 			}
 
 			data.StoreMutex.RLock()
-			storedEntry, exists := data.WishlistStore[entry.ID]
+			userEntries, exists := data.WishlistStore[tt.username]
 			data.StoreMutex.RUnlock()
 
 			if !exists {
-				t.Fatalf("Expected entry with ID %q to exist in data.WishlistStore", entry.ID)
+				t.Fatalf("Expected entries slice to exist for username %q", tt.username)
 			}
-			if storedEntry.CountryName != tt.countryName {
-				t.Errorf("Stored entry mismatch: expected country %q, got %q", tt.countryName, storedEntry.CountryName)
+
+			found := false
+			for _, storedEntry := range userEntries {
+				if storedEntry.ID == entry.ID {
+					found = true
+					if storedEntry.CountryName != tt.countryName {
+						t.Errorf("Stored entry mismatch: expected country %q, got %q", tt.countryName, storedEntry.CountryName)
+					}
+					if storedEntry.Note != tt.note {
+						t.Errorf("Stored entry mismatch: expected note %q, got %q", tt.note, storedEntry.Note)
+					}
+					if storedEntry.Status != tt.status {
+						t.Errorf("Stored entry mismatch: expected status %q, got %q", tt.status, storedEntry.Status)
+					}
+					break
+				}
+			}
+
+			if !found {
+				t.Errorf("Expected entry with ID %q to exist inside data.WishlistStore slice for user %q", entry.ID, tt.username)
 			}
 		})
 	}
