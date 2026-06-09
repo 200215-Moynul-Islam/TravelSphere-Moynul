@@ -11,6 +11,9 @@ func init() {
 		beego.NSNamespace("/countries",
 			beego.NSRouter("", &api.CountryController{}, "get:GetFilteredCountries"),
 		),
+		beego.NSNamespace("/wishlist",
+			beego.NSRouter("", &api.WishlistController{}, "post:CreateWishlist"),
+		),
 	)
 
 	beego.AddNamespace(ns)
