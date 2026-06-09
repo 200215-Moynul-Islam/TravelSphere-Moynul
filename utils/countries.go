@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"TravelSphere/constants"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -64,7 +65,7 @@ func GetAllCountries() ([]CountryDTO, error) {
 		baseURL = "https://restcountries.com/v3.1"
 	}
 
-	url := fmt.Sprintf("%s/all", baseURL)
+	url := fmt.Sprintf("%s/all?fields=%s", baseURL, constants.RestCountriesFields)
 	apiResponse, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed connection: %w", err)

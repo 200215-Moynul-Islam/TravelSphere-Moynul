@@ -21,3 +21,4 @@ var NavigationItems = []NavItem{
 }
 
 var FeaturedCountryCodes = []string{"USA", "FRA", "JPN", "AUS", "BRA", "BGD"}
+const RestCountriesFields = "cca3,population,region,subregion,name,flags,capital,currencies,languages"

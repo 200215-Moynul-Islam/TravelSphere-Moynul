@@ -281,7 +281,7 @@ func TestGetAllCountries(t *testing.T) {
             mockStatusCode: http.StatusOK,
             mockResponseBody: ``,
             expectError: true,
-            overrideURL: "",
+            overrideURL: "http://invalid-fallback-live-url-route.local",
             clearConfig: true,
         },
     }
@@ -291,6 +291,9 @@ func TestGetAllCountries(t *testing.T) {
             mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
                 if !strings.HasSuffix(r.URL.Path, "/all") {
                     t.Errorf("Expected URL path to end with /all, but got: %s", r.URL.Path)
+                }
+                if r.URL.Query().Get("fields") == "" {
+                    t.Errorf("Expected URL query parameters to contain filtered fields selection target criteria")
                 }
                 w.Header().Set("Content-Type", "application/json")
                 w.WriteHeader(tc.mockStatusCode)
@@ -306,6 +309,9 @@ func TestGetAllCountries(t *testing.T) {
 
             if tc.clearConfig {
                 _ = beego.AppConfig.Set("restcountries_base_url", "")
+                if tc.overrideURL != "" {
+                    _ = beego.AppConfig.Set("restcountries_base_url", tc.overrideURL)
+                }
             }
 
             resultData, err := GetAllCountries()
