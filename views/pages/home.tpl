@@ -18,7 +18,7 @@
     
     <div class="destinations-grid">
         {{range .FeaturedCountries}}
-        <a href="/country/{{.Code}}" class="destination-card-link">
+        <a href="/countries/{{.Code}}" class="destination-card-link">
             <div class="destination-card">
                 <div class="flag-wrapper">
                     <img src="{{.Flag}}" alt="Flag of {{.Name}}" loading="lazy">

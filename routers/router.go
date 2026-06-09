@@ -8,7 +8,7 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.HomeController{})
-	beego.Router("/country/:code", &controllers.CountryController{}, "get:GetDetails")
+	beego.Router("/countries/:code", &controllers.CountryController{}, "get:GetDetails")
 
 	// Register global error controller
     beego.ErrorController(&controllers.ErrorController{})
