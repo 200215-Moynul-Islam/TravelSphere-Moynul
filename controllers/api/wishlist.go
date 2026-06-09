@@ -50,3 +50,14 @@ func (c *WishlistController) CreateWishlist() {
 	}
 	c.SendSuccess("Destination successfully added to wishlist", entry, http.StatusCreated)
 }
+
+func (c *WishlistController) DeleteWishlist() {
+	username := c.Ctx.Input.Header("Username")
+	id := c.Ctx.Input.Param(":id")
+	service := &services.WishlistService{}
+	if err := service.DeleteWishlist(username, id); err != nil {
+		c.SendError(err.Error(), http.StatusNotFound)
+		return
+	}
+	c.SendSuccess("Wishlist entry deleted successfully", nil, http.StatusOK)
+}

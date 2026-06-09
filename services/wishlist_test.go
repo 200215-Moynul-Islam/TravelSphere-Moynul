@@ -4,6 +4,7 @@ import (
 	"TravelSphere/data"
 	"TravelSphere/models"
 	"testing"
+	"time"
 )
 
 func TestAddToWishlist(t *testing.T) {
@@ -92,6 +93,78 @@ func TestAddToWishlist(t *testing.T) {
 
 			if !found {
 				t.Errorf("Expected entry with ID %q to exist inside data.WishlistStore slice for user %q", entry.ID, tt.username)
+			}
+		})
+	}
+}
+
+func TestDeleteWishlist(t *testing.T) {
+	tests := []struct {
+		name string
+		username string
+		targetID string
+		initialStore map[string][]models.WishlistEntry
+		expectedErr bool
+		expectedLen int
+	}{
+		{
+			name: "Successful deletion",
+			username: "moynul_islam",
+			targetID: "id-123",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{ID: "id-123", CountryName: "Japan", CreatedAt: time.Now()},
+					{ID: "id-456", CountryName: "France", CreatedAt: time.Now()},
+				},
+			},
+			expectedErr: false,
+			expectedLen: 1,
+		},
+		{
+			name: "Entry ID not found",
+			username: "moynul_islam",
+			targetID: "id-unknown",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{ID: "id-123", CountryName: "Japan", CreatedAt: time.Now()},
+				},
+			},
+			expectedErr: true,
+			expectedLen: 1,
+		},
+		{
+			name: "User has no entries",
+			username: "unknown_user",
+			targetID: "id-123",
+			initialStore: map[string][]models.WishlistEntry{
+				"moynul_islam": {
+					{ID: "id-123", CountryName: "Japan", CreatedAt: time.Now()},
+				},
+			},
+			expectedErr: true,
+			expectedLen: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data.StoreMutex.Lock()
+			data.WishlistStore = tt.initialStore
+			data.StoreMutex.Unlock()
+
+			service := &WishlistService{}
+			err := service.DeleteWishlist(tt.username, tt.targetID)
+
+			if (err != nil) != tt.expectedErr {
+				t.Fatalf("Expected error presence: %v, got: %v", tt.expectedErr, err)
+			}
+
+			data.StoreMutex.RLock()
+			remainingLen := len(data.WishlistStore[tt.username])
+			data.StoreMutex.RUnlock()
+
+			if !tt.expectedErr && remainingLen != tt.expectedLen {
+				t.Errorf("Expected remaining slice length to be %d, got %d", tt.expectedLen, remainingLen)
 			}
 		})
 	}

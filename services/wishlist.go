@@ -3,6 +3,7 @@ package services
 import (
 	"TravelSphere/data"
 	"TravelSphere/models"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -24,4 +25,20 @@ func (s *WishlistService) AddToWishlist(username, countryName, note, status stri
 
 	data.WishlistStore[username] = append(data.WishlistStore[username], entry)
 	return entry, nil
+}
+
+func (s *WishlistService) DeleteWishlist(username, id string) error {
+	data.StoreMutex.Lock()
+	defer data.StoreMutex.Unlock()
+	userEntries, exists := data.WishlistStore[username]
+	if !exists {
+		return errors.New("wishlist entry not found")
+	}
+	for i, entry := range userEntries {
+		if entry.ID == id {
+			data.WishlistStore[username] = append(userEntries[:i], userEntries[i+1:]...)
+			return nil
+		}
+	}
+	return errors.New("wishlist entry not found")
 }
