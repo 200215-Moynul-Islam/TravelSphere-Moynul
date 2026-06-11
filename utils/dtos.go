@@ -9,12 +9,18 @@ type CountryDTO struct {
 		Common string `json:"common"`
 		Official string `json:"official"`
 	} `json:"name"`
-	Flags struct {
-		Png string `json:"png"`
-	} `json:"flags"`
-	Capital []string `json:"capital"`
-	Currencies map[string]struct {
+	Flag struct {
+		Png string `json:"url_png"`
+	} `json:"flag"`
+	Capitals []struct {
 		Name string `json:"name"`
+	} `json:"capitals"`
+	Currencies []struct {
+		Code string `json:"code"`
+		Name string `json:"name"`
+		Symbol string `json:"symbol"`
 	} `json:"currencies"`
-	Languages map[string]string `json:"languages"`
+	Languages []struct {
+		Name string `json:"name"`
+	} `json:"languages"`
 }

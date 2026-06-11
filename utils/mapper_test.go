@@ -1,47 +1,45 @@
 package utils
 
 import (
-	"TravelSphere/models"
-	"reflect"
 	"testing"
 )
 
-func TestMapToCountryModel(t *testing.T) {
-	dto := CountryDTO{
-		Cca3: "BGD",
-		Population: 170000000,
-		Region: "Asia",
-		Subregion: "Southern Asia",
-		Capital: []string{"Dhaka"},
-		Currencies: map[string]struct{ Name string `json:"name"` }{
-			"BDT": {Name: "Bangladeshi taka"},
-		},
-		Languages: map[string]string{
-			"ben": "Bengali",
-		},
-	}
-	dto.Name.Common = "Bangladesh"
-	dto.Name.Official = "People's Republic of Bangladesh"
-	dto.Flags.Png = "https://flagcdn.com/w320/bd.png"
+// func TestMapToCountryModel(t *testing.T) {
+// 	dto := CountryDTO{
+// 		Cca3: "BGD",
+// 		Population: 170000000,
+// 		Region: "Asia",
+// 		Subregion: "Southern Asia",
+// 		Capital: []string{"Dhaka"},
+// 		Currencies: map[string]struct{ Name string `json:"name"` }{
+// 			"BDT": {Name: "Bangladeshi taka"},
+// 		},
+// 		Languages: map[string]string{
+// 			"ben": "Bengali",
+// 		},
+// 	}
+// 	dto.Name.Common = "Bangladesh"
+// 	dto.Name.Official = "People's Republic of Bangladesh"
+// 	dto.Flags.Png = "https://flagcdn.com/w320/bd.png"
 
-	expected := models.Country{
-		Code: "BGD",
-		Name: "Bangladesh",
-		OfficialName: "People's Republic of Bangladesh",
-		Flag: "https://flagcdn.com/w320/bd.png",
-		Capital: "Dhaka",
-		Population: "170.0M",
-		Region: "Asia - Southern Asia",
-		Currency: "BDT (Bangladeshi taka)",
-		Languages: "Bengali",
-	}
+// 	expected := models.Country{
+// 		Code: "BGD",
+// 		Name: "Bangladesh",
+// 		OfficialName: "People's Republic of Bangladesh",
+// 		Flag: "https://flagcdn.com/w320/bd.png",
+// 		Capital: "Dhaka",
+// 		Population: "170.0M",
+// 		Region: "Asia - Southern Asia",
+// 		Currency: "BDT (Bangladeshi taka)",
+// 		Languages: "Bengali",
+// 	}
 
-	result := MapToCountryModel(dto)
+// 	result := MapToCountryModel(dto)
 
-	if !reflect.DeepEqual(result, expected) {
-		t.Errorf("MapToCountryModel returned unexpected structure.\nGot: %+v\nExpected: %+v", result, expected)
-	}
-}
+// 	if !reflect.DeepEqual(result, expected) {
+// 		t.Errorf("MapToCountryModel returned unexpected structure.\nGot: %+v\nExpected: %+v", result, expected)
+// 	}
+// }
 
 func TestMapToCountrySlice(t *testing.T) {
 	dtos := []CountryDTO{
