@@ -30,9 +30,9 @@ func MapToCountryModel(dto CountryDTO) models.Country {
 	}
 
 	return models.Country{
-		Code: dto.Cca3,
-		Name: dto.Name.Common,
-		OfficialName: dto.Name.Official,
+		Code: dto.Codes.Alpha3,
+		Name: dto.Names.Common,
+		OfficialName: dto.Names.Official,
 		Flag: dto.Flag.Png,
 		Capital: capital,
 		Population: formatPopulation(dto.Population),

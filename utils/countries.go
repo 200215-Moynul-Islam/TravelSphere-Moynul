@@ -5,15 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
-
-func GetCountriesByCodes(codes []string) ([]CountryDTO, error) {
-	endpointPath := fmt.Sprintf("?codes=%s", strings.Join(codes, ","))
-	return callRestCountriesAPI(http.MethodGet, endpointPath)
-}
 
 func GetAllCountries(limit int) ([]CountryDTO, error) {
 	endpointPath := fmt.Sprintf("?response_fields=%s&limit=%d", constants.RestCountriesFields, limit)

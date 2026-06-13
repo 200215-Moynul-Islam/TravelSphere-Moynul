@@ -11,21 +11,35 @@ import (
 type CountryService struct{}
 
 func (s *CountryService) GetCountriesByCodes(codes []string) ([]models.Country, error) {
-	if len(codes) == 0 {
+    if len(codes) == 0 {
 		return []models.Country{}, nil
 	}
 
-	dtos, err := utils.GetCountriesByCodes(codes)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch countries: %w", err)
-	}
+    countryDTOs, err := utils.GetAllCountries(constants.DefaultCountriesLimit)
+    if err != nil {
+        return nil, fmt.Errorf("failed to fetch countries: %w", err)
+    }
 
-	countries, err := utils.MapToCountrySlice(dtos)
-	if err != nil {
-		return nil, fmt.Errorf("failed to translate country data: %w", err)
-	}
+    // Prepare a map for search codes for quick lookups
+    targetCodes := make(map[string]bool, len(codes))
+    for _, code := range codes {
+        targetCodes[strings.TrimSpace(code)] = true
+    }
 
-	return countries, nil
+    // Filter the coutries based on provied codes
+    var matchedCountryDTOs []utils.CountryDTO
+    for _, dto := range countryDTOs {
+        if targetCodes[strings.ToUpper(dto.Codes.Alpha3)] {
+            matchedCountryDTOs = append(matchedCountryDTOs, dto)
+        }
+    }
+
+    filteredCountries, err := utils.MapToCountrySlice(matchedCountryDTOs)
+    if err != nil {
+        return nil, fmt.Errorf("failed to translate country data: %w", err)
+    }
+
+    return filteredCountries, nil
 }
 
 func (s *CountryService) GetAllCountries(limit int) ([]models.Country, error) {
