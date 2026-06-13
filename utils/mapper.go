@@ -8,19 +8,19 @@ import (
 
 func MapToCountryModel(dto CountryDTO) models.Country {
 	capital := ""
-	if len(dto.Capital) > 0 {
-		capital = dto.Capital[0]
+	if len(dto.Capitals) > 0 {
+		capital = dto.Capitals[0].Name
 	}
 
 	currencyStr := ""
-	for code, curr := range dto.Currencies {
-		currencyStr = fmt.Sprintf("%s (%s)", code, curr.Name)
+	for _, curr := range dto.Currencies {
+		currencyStr = fmt.Sprintf("%s (%s)", curr.Code, curr.Name)
 		break
 	}
 
 	langList := make([]string, 0, len(dto.Languages))
 	for _, lang := range dto.Languages {
-		langList = append(langList, lang)
+		langList = append(langList, lang.Name)
 	}
 	languagesStr := strings.Join(langList, ", ")
 
@@ -33,7 +33,7 @@ func MapToCountryModel(dto CountryDTO) models.Country {
 		Code: dto.Cca3,
 		Name: dto.Name.Common,
 		OfficialName: dto.Name.Official,
-		Flag: dto.Flags.Png,
+		Flag: dto.Flag.Png,
 		Capital: capital,
 		Population: formatPopulation(dto.Population),
 		Region: regionStr,

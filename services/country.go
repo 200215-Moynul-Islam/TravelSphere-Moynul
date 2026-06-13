@@ -1,6 +1,7 @@
 package services
 
 import (
+	"TravelSphere/constants"
 	"TravelSphere/models"
 	"TravelSphere/utils"
 	"fmt"
@@ -27,8 +28,8 @@ func (s *CountryService) GetCountriesByCodes(codes []string) ([]models.Country, 
 	return countries, nil
 }
 
-func (s *CountryService) GetAllCountries() ([]models.Country, error) {
-    dtos, err := utils.GetAllCountries()
+func (s *CountryService) GetAllCountries(limit int) ([]models.Country, error) {
+    dtos, err := utils.GetAllCountries(limit)
     if err != nil {
         return nil, fmt.Errorf("failed to fetch all countries: %w", err)
     }
@@ -54,7 +55,7 @@ func (s *CountryService) GetFilteredCountries(search, region string) ([]models.C
     if region != "" && region != "all" {
         dtos, err = utils.GetCountriesByRegion(region)
     } else {
-        dtos, err = utils.GetAllCountries()
+        dtos, err = utils.GetAllCountries(constants.DefaultCountriesLimit)
     }
 
     if err != nil {
