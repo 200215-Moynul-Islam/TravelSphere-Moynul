@@ -31,7 +31,7 @@ searchInput.addEventListener("input", () => {
           li.textContent = `${country.name}${capitalText}`;
 
           li.addEventListener("click", () => {
-            window.location.href = `/country/${country.code}`;
+            window.location.href = `/countries/${country.code}`;
           });
           resultsDropdown.appendChild(li);
         });
