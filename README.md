@@ -22,6 +22,7 @@ A destination discovery and trip planner built with Go and Beego v2. Explore cou
 - Go 1.22 or higher
 - Beego CLI (`bee`) is required
 - An OpenTripMap API key
+- A REST Countries API key
 
 ## Setup
 
@@ -44,10 +45,11 @@ go mod tidy
 cp conf/app.conf.example conf/app.conf
 ```
 
-Edit `conf/app.conf` and set your API key:
+Edit `conf/app.conf` and set your API keys:
 
 ```ini
 opentripmap_api_key = your_api_key_here
+restcountries_api_key = your_api_key_here
 ```
 
 **4. Run the server**
@@ -63,6 +65,7 @@ The app starts at `http://localhost:8080`.
 | Key                       | Description                                |
 | ------------------------- | ------------------------------------------ |
 | `opentripmap_api_key`     | Required. Your OpenTripMap API key         |
+| `restcountries_api_key`   | Required. Your REST Countries API key      |
 | `restcountries_base_url`  | REST Countries base URL (has default)      |
 | `opentripmap_geoname_url` | OpenTripMap geoname endpoint (has default) |
 | `opentripmap_radius_url`  | OpenTripMap radius endpoint (has default)  |

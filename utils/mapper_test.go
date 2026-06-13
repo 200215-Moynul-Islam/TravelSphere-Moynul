@@ -8,21 +8,31 @@ import (
 
 func TestMapToCountryModel(t *testing.T) {
 	dto := CountryDTO{
-		Cca3: "BGD",
 		Population: 170000000,
 		Region: "Asia",
 		Subregion: "Southern Asia",
-		Capital: []string{"Dhaka"},
-		Currencies: map[string]struct{ Name string `json:"name"` }{
-			"BDT": {Name: "Bangladeshi taka"},
+		Capitals: []struct {
+			Name string `json:"name"`
+		}{
+			{Name: "Dhaka"},
 		},
-		Languages: map[string]string{
-			"ben": "Bengali",
+		Currencies: []struct {
+			Code string `json:"code"`
+			Name string `json:"name"`
+			Symbol string `json:"symbol"`
+		}{
+			{Code: "BDT", Name: "Bangladeshi taka"},
+		},
+		Languages: []struct {
+			Name string `json:"name"`
+		}{
+			{Name: "Bengali"},
 		},
 	}
-	dto.Name.Common = "Bangladesh"
-	dto.Name.Official = "People's Republic of Bangladesh"
-	dto.Flags.Png = "https://flagcdn.com/w320/bd.png"
+	dto.Codes.Alpha3 = "BGD"
+	dto.Names.Common = "Bangladesh"
+	dto.Names.Official = "People's Republic of Bangladesh"
+	dto.Flag.Png = "https://flagcdn.com/w320/bd.png"
 
 	expected := models.Country{
 		Code: "BGD",
@@ -46,12 +56,12 @@ func TestMapToCountryModel(t *testing.T) {
 func TestMapToCountrySlice(t *testing.T) {
 	dtos := []CountryDTO{
 		{
-			Cca3: "USA",
 			Population: 33100000,
 			Region: "Americas",
 		},
 	}
-	dtos[0].Name.Common = "United States"
+	dtos[0].Codes.Alpha3 = "USA"
+	dtos[0].Names.Common = "United States"
 
 	result, err := MapToCountrySlice(dtos)
 	if err != nil {

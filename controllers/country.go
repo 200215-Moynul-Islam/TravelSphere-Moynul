@@ -21,7 +21,7 @@ func (c *CountryController) GetAll() {
 
 	service := &services.CountryService{}
 
-	allCountries, err := service.GetAllCountries()
+	allCountries, err := service.GetAllCountries(constants.DefaultCountriesLimit)
 	if err != nil {
 		logs.Error("Failed to fetch country grid datasets: %v", err)
 		c.Data["Countries"] = []any{}

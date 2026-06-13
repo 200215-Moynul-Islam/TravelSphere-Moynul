@@ -20,8 +20,8 @@ var NavigationItems = []NavItem{
 	{Name: "Dashboard", URL: "/dashboard", Key: NavDashboard},
 }
 
-var FeaturedCountryCodes = []string{"USA", "FRA", "JPN", "AUS", "BRA", "BGD"}
-const RestCountriesFields = "cca3,population,region,subregion,name,flags,capital,currencies,languages"
+var FeaturedCountryCodes = []string{"AFG", "ALB", "ARG", "AUS", "BRA", "BGD"}
+const RestCountriesFields = "codes.alpha_3,population,region,subregion,names.common,flag.url_png,capitals,currencies,languages"
 
 const (
 	StatusPlanned = "Planned"
@@ -32,3 +32,5 @@ var AllowedStatuses = map[string]bool{
 	StatusPlanned: true,
 	StatusVisited: true,
 }
+
+const DefaultCountriesLimit = 100
